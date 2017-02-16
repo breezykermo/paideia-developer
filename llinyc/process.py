@@ -22,67 +22,74 @@ assert (len_args == 3), "\n\nYou need exactly 2 arguments: you have "+str(len_ar
 
 # HEADER PARAMS
 # -------------
-levels = ['None', 'Beginner', 'Intermediate', 'Advanced']
+levels = ['Beginner', 'Intermediate', 'Advanced']
 latinSkill = 'Experience with Spoken Latin'
 greekSkill = 'Knowledge of Ancient Greek'
 
 INPUT_FILENAME = 'data2017.csv'
-OUTPUT_FILENAME = 'partitioned.csv'
+OUTPUT_FILENAME = 'sat_groups.csv'
 NO_OF_GROUPS = int(sys.argv[1])
 LANGUAGE = sys.argv[2]
 
-# print(type(NO_OF_GROUPS))
+
 assert (type(NO_OF_GROUPS)), "1st argument needs to be an integer."
-print(LANGUAGE)
 assert (LANGUAGE == 'greek' or LANGUAGE == 'latin') , "2nd argument needs to be 'greek' or 'latin'."
 # -------------
 
-latin = {
+# intermediate data structure to store categorized persons
+# categories: 'a Categories
+categories = {
   'beginner': [],
   'intermediate': [],
   'advanced': [],
   'other': []
 }
 
-# process a list into into GROUP_NO subsets
-# chunks: 'a list -> int -> 'a list list
+# process a list into subsets of n items
+# chunks_of: 'a list -> int -> 'a list list
 def chunks_of(l, n=NO_OF_GROUPS):
   return [l[i:i + n] for i in range(0, len(l), n)]
 
+# process a list into n subsets
+# chunks: 'a list -> int -> 'a list list
 def chunks(l, n=NO_OF_GROUPS):
   return  [l[i:i+(len(l)//n)] for i in range(n)]
 
+# generate n categorized chunks from intermediate data structure
+# splitByCategory: 'a Categories -> n -> 'a list list
+
 # read from csv
 key_fields = []
-empty_person = {}
+# configure skill as latin or greek field
+skill = latinSkill if (LANGUAGE == 'latin') else greekSkill
+
+# separate input into classes
 with open(INPUT_FILENAME, 'r') as f:
   data = csv.DictReader(f)
-  # separate into classes
   for person in data:
     key_fields = person.keys()
-    if person[latinSkill] == levels[1]:
-      latin['beginner'].append(person)
-    elif person[latinSkill] == levels[2]:
-      latin['intermediate'].append(person)
-    elif person[latinSkill] == levels[3]:
-      latin['advanced'].append(person)
+    if person[skill] == levels[0]:
+      categories['beginner'].append(person)
+    elif person[skill] == levels[1]:
+      categories['intermediate'].append(person)
+    elif person[skill] == levels[2]:
+      categories['advanced'].append(person)
     else:
-      print("Someone's data was corrupted; check other")
-      latin['other'].append(person)
-  # process a skill into into GROUP_NO 
+      categories['other'].append(person)
 
+# write chunks to specified output
 with open(OUTPUT_FILENAME, 'w') as f:
   writer = csv.DictWriter(f,fieldnames=key_fields)
   # partition
-  # print(len(latin['beginner']))
-  groups = chunks(latin['beginner'])
+  # print(len(categories['beginner']))
+  groups = chunks(categories['beginner'])
   print(len(groups[0]))
   # print(groups)
   for group in groups:
     # print(len(group))
     for person in group:
       writer.writerow(person)
-    # writer.writerow(empty_person)
+    writer.writerow({})
   
 
 
