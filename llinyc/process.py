@@ -101,6 +101,12 @@ with open(OUTPUT_FILENAME, 'w') as f:
   #   for person in group:
   #     writer.writerow(person)
   #   writer.writerow({})
+  # create header
+  header = {}
+  for key in key_fields:
+    header[key] = key
+  writer.writerow(header)
+  # write other rows
   for group in split_by_category(categories):
     for person in group:
       writer.writerow(person)
