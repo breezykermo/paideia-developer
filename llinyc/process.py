@@ -27,7 +27,7 @@ levels = ['Beginner', 'Intermediate', 'Advanced']
 latinSkill = 'Experience with Spoken Latin'
 greekSkill = 'Knowledge of Ancient Greek'
 
-INPUT_FILENAME = 'data2017.csv'
+INPUT_FILENAME = '2018/data.csv'
 OUTPUT_FILENAME = sys.argv[3]
 NO_OF_GROUPS = int(sys.argv[1])
 LANGUAGE = sys.argv[2]
